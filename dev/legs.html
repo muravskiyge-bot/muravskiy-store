@@ -40,13 +40,13 @@
   .embed .ui:not(.touched) button:nth-child(11) { animation-delay: 3.0s; }
   .embed .ui:not(.touched) button:nth-child(5) { animation-delay: 3.5s; }
   @keyframes hint { 0%, 11%, 100% { box-shadow: 0 0 0 rgba(255,25,0,0); } 4% { box-shadow: 0 0 0 3px #ff1900, 0 0 16px 4px rgba(255,25,0,.7); } }
-  .embed .hint { position: fixed; left: 50%; top: 14px; transform: translateX(-50%); font: 700 11px 'IBM Plex Mono', monospace; color: #f4f3ef;
+  .embed .hint { position: fixed; left: 50%; top: 62px; transform: translateX(-50%); font: 700 11px 'IBM Plex Mono', monospace; color: #f4f3ef;
     background: #ff1900; color: #050505; padding: 4px 10px; pointer-events: none; transition: opacity .3s; }
   .embed .ui.touched ~ .hint { opacity: 0; }
   @media (max-width: 600px) {
     .embed .ui { flex-wrap: wrap; justify-content: center; width: calc(100% - 16px); bottom: 8px; }
     .embed .ui button { font-size: 9px; padding: 5px 7px; }
-    .embed .hint { top: 8px; bottom: auto; font-size: 9px; white-space: nowrap; }
+    .embed .hint { top: 48px; bottom: auto; font-size: 9px; white-space: nowrap; }
     .embed .hint::after { content: ''; } .embed .hint .long { display: none; }
   }
   @media (prefers-reduced-motion: reduce) { .embed .ui:not(.touched) button { animation: none; box-shadow: 0 0 0 2px #ff1900; } }
