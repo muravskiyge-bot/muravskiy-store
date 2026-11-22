@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Проба: образ на дорожке</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #16171c; overflow: hidden; }
+  canvas { display: block; width: 100%; height: 100%; }
+  .ui { position: fixed; left: 16px; bottom: 16px; display: flex; gap: 8px; font: 13px system-ui; }
+  .ui button { background: #2a2c34; color: #ddd; border: 0; padding: 8px 12px; border-radius: 6px; cursor: pointer; }
+  .ui button[aria-pressed="true"] { background: #4ff3e6; color: #111; }
+  .ui { flex-wrap: wrap; right: 16px; }
+  .ui .sep { width: 12px; }
+</style>
+<script>
+  // внутри главной (?embed=1): кнопки в стиле сайта, без переключения ракурса — класс до загрузки 3D, чтобы не мигало
+  if (/[?&]embed\b/.test(location.search)) document.documentElement.classList.add('embed');
+</script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@700&display=swap" rel="stylesheet">
+<style>
+  .embed, .embed body { background: #050505; }
+  .embed .ui { left: 10px; right: 10px; bottom: 10px; gap: 0; }
+  .embed .ui [data-view], .embed .ui .sep { display: none; }
+  .embed .ui button { font: 700 11px 'IBM Plex Mono', monospace; text-transform: uppercase; background: #050505; color: #f4f3ef;
+    border: 2px solid #f4f3ef; border-radius: 0; margin: 0 -2px -2px 0; padding: 6px 9px; }
+  .embed .ui button[aria-pressed="true"] { background: #f4f3ef; color: #050505; }
+  .embed .ui button[aria-pressed="false"] { color: #ff1900; text-decoration: line-through; }
+  .embed .ui { left: 50%; right: auto; transform: translateX(-50%); bottom: 14px; flex-wrap: nowrap; }
+  .embed .ui button { position: relative; padding: 8px 12px; cursor: pointer; transition: transform .12s, box-shadow .12s, background .12s; }
+  .embed .ui button:hover, .embed .ui button:focus-visible { transform: translate(-2px, -2px); box-shadow: 4px 4px 0 #ff1900; z-index: 1; outline: none; }
+  /* пока посетитель ни на что не нажал — кнопки по очереди вспыхивают, чтобы было видно, что их можно трогать */
+  .embed .ui:not(.touched) button { animation: hint 4s linear infinite; }
+  .embed .ui:not(.touched) button:nth-child(4) { animation-delay: 0.0s; }
+  .embed .ui:not(.touched) button:nth-child(6) { animation-delay: 0.5s; }
+  .embed .ui:not(.touched) button:nth-child(7) { animation-delay: 1.0s; }
+  .embed .ui:not(.touched) button:nth-child(8) { animation-delay: 1.5s; }
+  .embed .ui:not(.touched) button:nth-child(9) { animation-delay: 2.0s; }
+  .embed .ui:not(.touched) button:nth-child(10) { animation-delay: 2.5s; }
+  .embed .ui:not(.touched) button:nth-child(11) { animation-delay: 3.0s; }
+  .embed .ui:not(.touched) button:nth-child(5) { animation-delay: 3.5s; }
+  @keyframes hint { 0%, 11%, 100% { box-shadow: 0 0 0 rgba(255,25,0,0); } 4% { box-shadow: 0 0 0 3px #ff1900, 0 0 16px 4px rgba(255,25,0,.7); } }
+  .embed .hint { position: fixed; left: 50%; top: 14px; transform: translateX(-50%); font: 700 11px 'IBM Plex Mono', monospace; color: #f4f3ef;
+    background: #ff1900; color: #050505; padding: 4px 10px; pointer-events: none; transition: opacity .3s; }
+  .embed .ui.touched ~ .hint { opacity: 0; }
+  @media (max-width: 600px) {
+    .embed .ui { flex-wrap: wrap; justify-content: center; width: calc(100% - 16px); bottom: 8px; }
+    .embed .ui button { font-size: 9px; padding: 5px 7px; }
+    .embed .hint { top: 8px; bottom: auto; font-size: 9px; white-space: nowrap; }
+    .embed .hint::after { content: ''; } .embed .hint .long { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) { .embed .ui:not(.touched) button { animation: none; box-shadow: 0 0 0 2px #ff1900; } }
+</style>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="ui">
+  <button data-view="side" aria-pressed="true">Сбоку</button>
+  <button data-view="three" aria-pressed="false">3/4</button>
+  <button data-view="front" aria-pressed="false">Спереди</button>
+  <button data-hold="coffee" aria-pressed="false">Кофе</button>
+  <span class="sep"></span>
+  <button data-wear="hoodie" aria-pressed="true">Худи</button>
+  <button data-wear="pants" aria-pressed="true">Штаны</button>
+  <button data-wear="feet" aria-pressed="true">Кеды</button>
+  <button data-wear="cap" aria-pressed="true">Кепка</button>
+  <button data-wear="glasses" aria-pressed="true">Очки</button>
+  <button data-wear="watch" aria-pressed="true">Часы</button>
+</div>
+<p class="hint" hidden>ЖМИТЕ НА ВЕЩИ<span class="long">: СНИМАЙТЕ И НАДЕВАЙТЕ</span></p>
+<script type="module">
+import * as THREE from 'three';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { loadClothLoop } from '../js/cloth.js';
+import { createTreadmill, DECK_TOP } from '../js/treadmill.js';
+import { loadFeet } from '../js/feet.js';
+import { loadHead, HEAD_FIT } from '../js/head.js';
+import { loadHands, loadHeld } from '../js/hands.js';
+
+const q = new URLSearchParams(location.search);
+if (q.has('embed')) {
+  document.querySelector('.hint').hidden = false;
+  document.querySelector('.ui').addEventListener('click', (e) => { if (e.target.closest('button')) e.currentTarget.classList.add('touched'); });
+}
+const canvas = document.getElementById('c');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.toneMapping = THREE.AgXToneMapping;
+renderer.toneMappingExposure = 1;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(q.has('embed') ? 0x050505 : 0x16171c);
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+scene.environmentIntensity = 0.35;
+
+// мягкий студийный свет: ключ сверху-спереди, контровой сзади, без пересвета
+const key = new THREE.DirectionalLight(0xfff4e8, 2.2);
+key.position.set(2, 4, 3);
+key.castShadow = true;
+key.shadow.mapSize.set(2048, 2048);
+key.shadow.camera.left = key.shadow.camera.bottom = -2;
+key.shadow.camera.right = key.shadow.camera.top = 2;
+key.shadow.radius = 6;
+key.shadow.bias = -0.0005;
+scene.add(key);
+const rim = new THREE.DirectionalLight(0xbfd8ff, 1.4);
+rim.position.set(-2, 2.5, -3);
+scene.add(rim);
+
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(20, 20), new THREE.ShadowMaterial({ opacity: 0.35 }));
+floor.rotation.x = -Math.PI / 2;
+floor.receiveShadow = true;
+scene.add(floor);
+
+const camera = new THREE.PerspectiveCamera(28, 1, 0.05, 50);
+// ?wide=1 — горизонтальное окно на главной: камера ближе и ниже, чтобы человек занимал кадр по высоте
+const narrow = innerWidth < 600;
+const views = q.has('wide') ? (narrow ? { side: [5.6, 1.5, 0.1], three: [3.5, 1.6, 4.3], front: [0, 1.75, 5.6] } : { side: [4.3, 1.4, 0.1], three: [2.7, 1.5, 3.35], front: [0, 1.65, 4.3] }) : { side: [5.2, 1.5, 0.1], three: [3.8, 1.8, 3.8], front: [0, 2.2, 5.2] };
+let view = 'side';
+document.querySelectorAll('[data-view]').forEach((b) => b.addEventListener('click', () => {
+  view = b.dataset.view;
+  document.querySelectorAll('[data-view]').forEach((x) => x.setAttribute('aria-pressed', x === b));
+}));
+if (q.get('view')) view = q.get('view');
+document.querySelectorAll('[data-view]').forEach((x) => x.setAttribute('aria-pressed', x.dataset.view === view));
+
+const hoodie = await loadClothLoop('../assets/anim/hoodie', {
+  color: q.get('color') || '#2a2c33',
+  fabric: '../assets/anim/fabric.jpg',
+  alt: '../assets/anim/hoodie-elbow', // согнутые локти (dev/elbow.py) — только для руки, в которой вещь
+});
+hoodie.mesh.rotation.y = Number(q.get('yaw') || 0);
+hoodie.mesh.castShadow = true;
+const pants = await loadClothLoop('../assets/anim/pants', { color: '#ffffff', map: '../assets/anim/pants.jpg' });
+pants.mesh.castShadow = true;
+const feet = await loadFeet('../assets/anim/feet', '../assets/models/sneakers.glb');
+// невидимое тело: штаны и кеды запечены на манекене, в опоре его стопа на 3.5 см выше позы покоя
+const legs = new THREE.Group();
+legs.add(pants.mesh, feet.group);
+legs.position.y = DECK_TOP - Number(q.get('lift') ?? 0.035);
+hoodie.mesh.position.y = DECK_TOP + Number(q.get('hy') || 0);
+scene.add(legs);
+// отладка посадки: ?cap=scale,top,x,z,tilt и ?gl=scale,bottom,x,front,tilt
+const fit = structuredClone(HEAD_FIT);
+for (const [k, keys] of [['cap', ['scale', 'top', 'x', 'z', 'tilt']], ['gl', ['scale', 'bottom', 'x', 'front', 'tilt']]]) {
+  if (q.get(k)) q.get(k).split(',').forEach((v, i) => { if (v !== '') fit[k === 'gl' ? 'glasses' : 'cap'][keys[i]] = Number(v); });
+}
+const head = await loadHead('../assets/anim/head', { cap: '../assets/models/cap.glb', glasses: '../assets/models/glasses-aviator.glb' }, fit);
+hoodie.mesh.add(head.group);
+const loops = [hoodie, pants, feet, head];
+// вещь в руке: кофе — левая; рука сгибается, только пока вещь в ней. ?hold= — без кофе
+const HOLD = { coffee: 'left' };
+const hands = await loadHands('../assets/anim/hands.json', hoodie);
+const held3d = await loadHeld(hands.anchors, {
+  coffee: '../assets/models/coffee.glb', watch: '../assets/models/watch.glb',
+});
+loops.push(hands, held3d);
+const held = new Set((q.get('hold') ?? 'coffee').split(',').filter((k) => k in HOLD));
+function hold(item, on, instant = false) {
+  on ? held.add(item) : held.delete(item);
+  hoodie.setAlt(HOLD[item], on, instant || q.has('t'));  // с ?t= время стоит — без анимации
+  document.querySelector(`[data-hold="${item}"]`).setAttribute('aria-pressed', on);
+}
+for (const item of Object.keys(HOLD)) {
+  hold(item, held.has(item), true);
+  document.querySelector(`[data-hold="${item}"]`).addEventListener('click', () => hold(item, !held.has(item)));
+}
+// снять/надеть каждую вещь. Худи прячем только материалом: на его меше висят кепка, очки и кисти (часы, кофе).
+// ?off=hoodie,cap — снято при загрузке
+const WEAR = {
+  hoodie: (on) => { hoodie.mesh.material.visible = on; },
+  pants: (on) => { pants.mesh.visible = on; },
+  feet: (on) => { feet.group.visible = on; },
+  cap: (on) => { head.cap.visible = on; },
+  glasses: (on) => { head.glasses.visible = on; },
+  watch: (on) => { held3d.items.watch.group.visible = on; },
+};
+const off = new Set((q.get('off') || '').split(','));
+for (const [k, set] of Object.entries(WEAR)) {
+  const btn = document.querySelector(`[data-wear="${k}"]`);
+  const apply = (on) => { set(on); btn.setAttribute('aria-pressed', on); };
+  apply(!off.has(k));
+  btn.addEventListener('click', () => apply(btn.getAttribute('aria-pressed') !== 'true'));
+}
+if (q.has('body')) {
+  const body = await loadClothLoop('../assets/anim/body-debug', { color: '#ff5c8a' });
+  body.mesh.material.transparent = true;
+  body.mesh.material.opacity = 0.45;
+  legs.add(body.mesh);
+  loops.push(body);
+}
+const treadmill = createTreadmill({ speed: Number(q.get('speed') || 0.95) });
+treadmill.group.position.z = -0.2; // человек ближе к консоли, как на настоящей дорожке
+scene.add(treadmill.group);
+scene.add(hoodie.mesh);
+
+function resize() {
+  renderer.setSize(innerWidth, innerHeight, false);
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+}
+addEventListener('resize', resize);
+resize();
+
+const fixedT = q.get('t');
+let last = performance.now(), t = 0;
+renderer.setAnimationLoop((now) => {
+  const dt = Math.min((now - last) / 1000, 0.05); last = now;
+  t += dt;
+  treadmill.update(dt);
+  for (const l of loops) l.update(fixedT !== null ? Number(fixedT) : t);
+  // вещь видна, когда рука уже почти согнута: появляется в конце сгиба, исчезает в начале разгиба
+  for (const item of Object.keys(HOLD)) held3d.items[item].group.visible = hoodie.altWeight(HOLD[item]) > 0.6;
+  if (q.get('cam')) camera.position.set(...q.get('cam').split(',').map(Number)); // отладка: ?cam=x,y,z&look=y
+  else camera.position.set(...views[view]);
+  camera.lookAt(0, Number(q.get('look') || (q.has('wide') ? (narrow ? 0.92 : 1.0) : 1.0)), 0.1);
+  renderer.render(scene, camera);
+});
+document.title = 'ready';
+</script>
+</body>
+</html>

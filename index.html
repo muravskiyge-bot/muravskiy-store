@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MURAVSKIY//STORE: сайты на заказ</title>
+<meta name="description" content="Портфолио Георгия Муравского, сделанное как магазин одежды. Каждая вещь в нём рассказывает, как он делает сайты.">
+<meta name="theme-color" content="#ecebe6">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Crect width='8' height='8' fill='%23050505'/%3E%3Crect x='1' y='1' width='6' height='6' fill='%23ff1900'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;700;900&family=IBM+Plex+Mono:wght@400;700&family=Oswald:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script>
+  // тема до отрисовки, чтобы не мигало
+  // по умолчанию светлая; выбор посетителя помним (ключ новый — прежний выбор тёмной сброшен)
+  let t = 'light';
+  try { t = localStorage.getItem('theme-v2') || 'light'; } catch (e) {}
+  document.documentElement.dataset.theme = t;
+</script>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<div class="redline" aria-hidden="true"></div>
+<a class="skip" href="#contact">Перейти к контактам</a>
+
+<header class="top">
+  <div class="wrap top__row">
+    <a class="logo" href="#hero" aria-label="Наверх">MURAVSKIY//STORE <span class="chip chip--red">FW / 2026</span></a>
+    <nav class="top__nav mono" aria-label="Разделы">
+      <a href="#collection">Вещи</a><span>/</span><a href="#fitting">Примерочная</a><span>/</span><a href="#manifesto">Манифест</a>
+    </nav>
+    <div class="top__right">
+      <button class="theme" type="button" role="switch" aria-checked="false" aria-label="Светлая тема"><span class="theme__label mono" aria-hidden="true">ТЬМА</span><span class="theme__track" aria-hidden="true"><i class="theme__ico theme__ico--moon">☾</i><i class="theme__ico theme__ico--sun">☀</i><span class="theme__knob"></span></span><span class="theme__label mono" aria-hidden="true">СВЕТ</span></button>
+      <a class="btn btn--white" href="#contact">Заказ 01 <i class="pulse" aria-hidden="true"></i></a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero" id="hero">
+    <div class="hero__strip mono">
+      <span><b>ДРОП 01</b> <em>//</em> <b class="red">ПОРТФОЛИО</b></span>
+      <span class="hide-sm">ГЕОРГИЙ МУРАВСКИЙ // ВЕБ-РАЗРАБОТЧИК</span>
+    </div>
+    <div class="hero__stage">
+      <figure class="frame hero__frame">
+        <!-- фото: Pexels 16651337 (лицензия Pexels), полосы на глазах вшиты — dev: models/hero-pexels-original.jpg -->
+        <img src="assets/img/hero.jpg" alt="Трое парней в цепях у стены с граффити, глаза закрыты чёрными полосами" width="2200" height="1467">
+        <span class="barcode br" aria-hidden="true"><svg><use href="#barcode"/></svg></span>
+        <i class="cross c1" aria-hidden="true">+</i><i class="cross c2" aria-hidden="true">+</i><i class="cross c3" aria-hidden="true">+</i><i class="cross c4" aria-hidden="true">+</i>
+      </figure>
+      <div class="hero__type wrap">
+        <h1 class="hero__h1"><span class="display hero__h hero__h--top">СИЛЬНЫЙ<br><span class="red">ПРИМЕР</span></span>
+        <span class="display hero__h hero__h--bottom">ДЛЯ СИЛЬНЫХ<br><span class="box box--white">ЛЮДЕЙ.</span></span></h1>
+      </div>
+    </div>
+    <div class="hero__bar wrap mono">
+      <span><b>[КОНЦЕПТ]</b> ОДНА ВЕЩЬ, ОДИН ПРИНЦИП <em>•</em> <span class="hide-sm">ЦЕНА ПО ТЗ</span></span>
+      <a class="btn btn--red" href="#collection">Смотреть дроп 01 →</a>
+    </div>
+  </section>
+
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee__row cond">
+      <span>MURAVSKIY//STORE • НОВЫЙ ДРОП • САЙТЫ НА ЗАКАЗ • FW / 2026 •</span><span>MURAVSKIY//STORE • НОВЫЙ ДРОП • САЙТЫ НА ЗАКАЗ • FW / 2026 •</span><span>MURAVSKIY//STORE • НОВЫЙ ДРОП • САЙТЫ НА ЗАКАЗ • FW / 2026 •</span><span>MURAVSKIY//STORE • НОВЫЙ ДРОП • САЙТЫ НА ЗАКАЗ • FW / 2026 •</span>
+    </div>
+  </div>
+  <svg class="drips" aria-hidden="true"><use href="#drips"/></svg>
+
+  <section class="collection" id="collection" aria-label="Коллекция">
+    <div class="wrap section-head reveal">
+      <div>
+        <p class="chip chip--line mono">[01 // КОЛЛЕКЦИЯ]</p>
+        <h2 class="display h2" data-decode>ВЕЩИ<br><span class="red">С ХАРАКТЕРОМ.</span></h2>
+      </div>
+      <div class="spec-box mono">
+        <p class="spec-box__row"><b>СЕРИЯ:</b><b class="red">FW / 2026</b></p>
+        <p>Шесть вещей, и за каждой стоит то, как я работаю. Модели можно наклонять и смотреть под разным светом.</p>
+      </div>
+    </div>
+
+    <div class="wrap grid">
+      <article class="product card reveal span-7" data-item="hoodie">
+        <div class="card__head mono"><b class="red">АРТ. 001-HD</b></div>
+        <div class="product__stage">
+          <canvas class="product__canvas" role="img" aria-label="Тёмное худи оверсайз с капюшоном, 3D"></canvas>
+          <p class="product__hint mono" aria-hidden="true">← НАКЛОНИТЕ →</p>
+          <div class="lights mono" role="group" aria-label="Освещение">
+            <button type="button" data-light="studio" aria-pressed="true">Студия</button><button type="button" data-light="sunset" aria-pressed="false">Закат</button><button type="button" data-light="neon" aria-pressed="false">Вечеринка</button>
+          </div>
+        </div>
+        <div class="card__body">
+          <div class="card__title"><h3 class="display">ХУДИ // ХАРАКТЕР</h3></div>
+          <p class="mono card__spec">ДИЗАЙН: ПОД ВАШУ НИШУ</p>
+          <ul class="mono card__list">
+            <li>• РИСУЮ ДИЗАЙН ПОД ВАШУ НИШУ И ВАШИХ КЛИЕНТОВ</li>
+            <li>• ЕСЛИ У БРЕНДА ЕСТЬ ЦВЕТА И ШРИФТЫ, БЕРУ ИХ</li>
+          </ul>
+          <a class="btn btn--block" href="#contact">Хочу свой дизайн →</a>
+        </div>
+      </article>
+
+      <article class="product card reveal span-5 drop" data-item="sneaker">
+        <div class="card__head mono"><b class="red">АРТ. 002-SNK</b></div>
+        <div class="product__stage">
+          <canvas class="product__canvas" role="img" aria-label="Белые высокие кеды, 3D"></canvas>
+          <p class="product__hint mono" aria-hidden="true">← НАКЛОНИТЕ →</p>
+          <div class="lights mono" role="group" aria-label="Освещение">
+            <button type="button" data-light="studio" aria-pressed="true">Студия</button><button type="button" data-light="sunset" aria-pressed="false">Закат</button><button type="button" data-light="neon" aria-pressed="false">Вечеринка</button>
+          </div>
+        </div>
+        <div class="card__body">
+          <div class="card__title"><h3 class="display">КЕДЫ // ДВИЖЕНИЕ</h3></div>
+          <p class="mono card__spec">ХОД: ПО ЭТАПАМ</p>
+          <ul class="mono card__list">
+            <li>• ПОСЛЕ КАЖДОГО ЭТАПА ПОКАЗЫВАЮ, ЧТО ГОТОВО</li>
+            <li>• ЗАМЕЧАНИЯ ПРАВЛЮ ПО ХОДУ РАБОТЫ</li>
+          </ul>
+          <a class="btn btn--block" href="#contact">Обсудить проект →</a>
+        </div>
+      </article>
+
+      <article class="product card reveal span-5" data-item="watch">
+        <div class="card__head mono"><b class="red">АРТ. 003-WTC</b></div>
+        <div class="product__stage">
+          <canvas class="product__canvas" role="img" aria-label="Часы на кожаном ремешке, 3D"></canvas>
+          <p class="product__hint mono" aria-hidden="true">← НАКЛОНИТЕ →</p>
+          <div class="lights mono" role="group" aria-label="Освещение">
+            <button type="button" data-light="studio" aria-pressed="true">Студия</button><button type="button" data-light="sunset" aria-pressed="false">Закат</button><button type="button" data-light="neon" aria-pressed="false">Вечеринка</button>
+          </div>
+        </div>
+        <div class="card__body">
+          <div class="card__title"><h3 class="display">ЧАСЫ // ТОЧНОСТЬ</h3></div>
+          <p class="mono card__spec">СРОК: ИЗВЕСТЕН ЗАРАНЕЕ</p>
+          <ul class="mono card__list">
+            <li>• СРОК НАЗЫВАЮ ДО НАЧАЛА РАБОТЫ И ДЕРЖУ ЕГО</li>
+            <li>• ОШИБКИ ПЕРВОГО МЕСЯЦА ПОСЛЕ ЗАПУСКА ИСПРАВЛЯЮ БЕСПЛАТНО</li>
+          </ul>
+          <a class="btn btn--block" href="#contact">Узнать срок →</a>
+        </div>
+      </article>
+
+      <article class="product card reveal span-7" data-item="pants">
+        <div class="card__head mono"><b class="red">АРТ. 004-PNT</b></div>
+        <div class="product__stage product__stage--wide">
+          <canvas class="product__canvas" role="img" aria-label="Широкие штаны с граффити, 3D"></canvas>
+          <p class="product__hint mono" aria-hidden="true">← НАКЛОНИТЕ →</p>
+          <div class="lights mono" role="group" aria-label="Освещение">
+            <button type="button" data-light="studio" aria-pressed="true">Студия</button><button type="button" data-light="sunset" aria-pressed="false">Закат</button><button type="button" data-light="neon" aria-pressed="false">Вечеринка</button>
+          </div>
+        </div>
+        <div class="card__body">
+          <div class="card__title"><h3 class="display">ШТАНЫ // СВОБОДА</h3></div>
+          <p class="mono card__spec">ЗАВИСИМОСТЬ ОТ РАЗРАБОТЧИКА: НЕТ</p>
+          <ul class="mono card__list">
+            <li>• ДАЮ ИНСТРУКЦИЮ: ТЕКСТЫ И ФОТО ВЫ МЕНЯЕТЕ САМИ</li>
+            <li>• ПОМОГАЮ ПОДКЛЮЧИТЬ ДОМЕН</li>
+          </ul>
+          <a class="btn btn--block" href="#contact">Спросить про запуск →</a>
+        </div>
+      </article>
+
+      <article class="product card reveal span-6" data-item="cap">
+        <div class="card__head mono"><b class="red">АРТ. 005-CAP</b></div>
+        <div class="product__stage">
+          <canvas class="product__canvas" role="img" aria-label="Светлая бейсболка, 3D"></canvas>
+          <p class="product__hint mono" aria-hidden="true">← НАКЛОНИТЕ →</p>
+          <div class="lights mono" role="group" aria-label="Освещение">
+            <button type="button" data-light="studio" aria-pressed="true">Студия</button><button type="button" data-light="sunset" aria-pressed="false">Закат</button><button type="button" data-light="neon" aria-pressed="false">Вечеринка</button>
+          </div>
+        </div>
+        <div class="card__body">
+          <div class="card__title"><h3 class="display">КЕПКА // ГОЛОВА</h3></div>
+          <ul class="mono card__list">
+            <li>• ПЕРЕД СТАРТОМ РАЗБИРАЮ ВАШЕ ТЗ</li>
+            <li>• ВСЁ НЕПОНЯТНОЕ УТОЧНЯЮ ЗАРАНЕЕ</li>
+          </ul>
+          <a class="btn btn--block" href="#contact">Прислать ТЗ →</a>
+        </div>
+      </article>
+
+      <article class="product card reveal span-6 drop" data-item="glasses">
+        <div class="card__head mono"><b class="red">АРТ. 006-GLS</b></div>
+        <div class="product__stage">
+          <canvas class="product__canvas" role="img" aria-label="Очки-авиаторы, 3D"></canvas>
+          <p class="product__hint mono" aria-hidden="true">← НАКЛОНИТЕ →</p>
+          <div class="lights mono" role="group" aria-label="Освещение">
+            <button type="button" data-light="studio" aria-pressed="true">Студия</button><button type="button" data-light="sunset" aria-pressed="false">Закат</button><button type="button" data-light="neon" aria-pressed="false">Вечеринка</button>
+          </div>
+        </div>
+        <div class="card__body">
+          <div class="card__title"><h3 class="display">ОЧКИ // ВЗГЛЯД</h3></div>
+          <ul class="mono card__list">
+            <li>• ПРОВЕРЯЮ САЙТ ТАК, КАК ЕГО УВИДИТ ВАШ КЛИЕНТ</li>
+            <li>• ЛИШНИЙ ТЕКСТ РЕЖУ</li>
+          </ul>
+          <a class="btn btn--block" href="#contact">Написать →</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="statement" id="fitting" aria-label="Примерочная">
+    <div class="crossgrid" aria-hidden="true"></div>
+    <div class="wrap statement__col">
+      <div class="statement__text reveal">
+        <p class="chip chip--white mono">[02 // ПРИМЕРОЧНАЯ]</p>
+        <h2 class="display statement__h" data-decode>НОСИ<br><span class="red">СВОЙ</span><span class="box box--red">СТИЛЬ.</span></h2>
+        <div class="note mono">
+          <b class="red">ПРИМЕРОЧНАЯ // ЖИВОЕ 3D:</b>
+          Невидимый человек вышел на дорожку в вещах из дропа. Снимайте их по одной, кофе тоже можно забрать.
+        </div>
+      </div>
+      <div class="statement__fig reveal">
+        <div class="statement__back" aria-hidden="true"></div>
+        <figure class="frame statement__frame">
+          <iframe src="dev/legs.html?view=three&embed=1&wide=1" title="Примерочная: невидимый человек на беговой дорожке" loading="lazy"></iframe>
+          <figcaption class="mono"><span class="red">FIG. 02 // ПРИМЕРОЧНАЯ</span><span class="red">3D В БРАУЗЕРЕ</span></figcaption>
+        </figure>
+        <span class="freq mono">ЦИКЛ ШАГА: 46 КАДРОВ</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="manifesto" id="manifesto">
+    <i class="corner mono k1">+ 01</i><i class="corner mono k2">+ 02</i><i class="corner mono k3">+ 03</i><i class="corner mono k4">+ 04</i>
+    <div class="wrap">
+      <div class="manifesto__line mono reveal"><span>// МАНИФЕСТ: FW / 2026</span><b class="red">ПРАВИЛ: 3</b></div>
+      <p class="display manifesto__text reveal">ДЕЛАЮ САЙТЫ, КОТОРЫЕ ЗАПОМИНАЮТСЯ. <span class="red">ДИЗАЙН</span> ПРИДУМЫВАЮ ПОД ВАШ <u>БИЗНЕС</u>, <span class="box box--white shadow-red">3D</span> ДОБАВЛЯЮ, КОГДА ОНО ПОМОГАЕТ ПРОДАВАТЬ. ДЛЯ ТЕХ, КТО НЕ ХОЧЕТ КАК У ВСЕХ.</p>
+      <div class="manifesto__cards reveal">
+        <div class="mcard shadow-white"><b class="red mono">[01 // СВОЙ ДИЗАЙН]</b><p>Каждый сайт рисую отдельно. Конструкторов и готовых тем у меня нет.</p></div>
+        <div class="mcard shadow-red"><b class="red mono">[02 // ЦЕНА]</b><p>Считаю её после разбора ТЗ. Готовых пакетов нет, вы платите за свою задачу.</p></div>
+        <div class="mcard shadow-white"><b class="red mono">[03 // НА СВЯЗИ]</b><p>В Telegram отвечаю сам, без менеджеров и пересказов.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta" id="contact">
+    <span class="cta__bg display" aria-hidden="true">MURAVSKIY</span>
+    <div class="wrap cta__inner">
+      <p class="chip chip--black mono"><i class="ping" aria-hidden="true"></i> TELEGRAM // @KBOOMTS</p>
+      <h2 class="display cta__h">ЗАКАЗ 01<br><span class="box box--black">ОТКРЫТ.</span></h2>
+      <p class="mono cta__p">НАПИШИТЕ, ЧТО НУЖНО СДЕЛАТЬ. РАЗБЕРУ ТЗ И НАЗОВУ ЦЕНУ.</p>
+      <a class="btn btn--black btn--big" href="https://t.me/kboomts" target="_blank" rel="noopener">Написать в Telegram →</a>
+      <p class="mono cta__meta"><span>СЕЗОН: FW / 2026</span><span>•</span><span>РЕФ. GM-2026-0047</span></p>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer__grid">
+    <div class="footer__about">
+      <p class="logo logo--big">MURAVSKIY <span class="chip chip--red">АРХИВ</span></p>
+      <p class="mono muted">Георгий Муравский, веб-разработчик. Дизайн и 3D для сайтов на заказ.</p>
+    </div>
+    <div class="mono">
+      <h4>[НАВИГАЦИЯ]</h4>
+      <ul><li><a href="#hero">• НАВЕРХ</a></li><li><a href="#collection">• ВЕЩИ ДРОПА 01</a></li><li><a href="#fitting">• ПРИМЕРОЧНАЯ</a></li><li><a href="#manifesto">• МАНИФЕСТ</a></li></ul>
+    </div>
+    <div class="mono">
+      <h4>[СВЯЗЬ]</h4>
+      <ul><li><a href="https://t.me/kboomts" target="_blank" rel="noopener">• TELEGRAM @KBOOMTS ↗</a></li></ul>
+    </div>
+    <div class="mono">
+      <h4>[3D-МОДЕЛИ // CC BY]</h4>
+      <ul class="muted credits">
+        <li><a href="https://sketchfab.com/3d-models/af100701826e4bb9abc1ff1a1d24ab1e" target="_blank" rel="noopener">Green and white hoodie</a>, Style3D CG</li>
+        <li><a href="https://sketchfab.com/3d-models/0c6ee67086ed43ff8f531a5db991c8ee" target="_blank" rel="noopener">Converse Classic</a>, turbopurr</li>
+        <li><a href="https://sketchfab.com/3d-models/5a9b5a0ce4944cad97fc9e2d6ddfc6a4" target="_blank" rel="noopener">Baggy Pants FREE</a>, artemlevandovskiy24</li>
+        <li><a href="https://sketchfab.com/3d-models/1c1d34d73fd94e6b9e8f82b1eb7194a0" target="_blank" rel="noopener">Baseball Cap</a>, Scott VanArsdale</li>
+        <li><a href="https://sketchfab.com/3d-models/00d1cb5aa82745228a3b764c97f867de" target="_blank" rel="noopener">Aviator sunglasses</a>, Kimppo</li>
+        <li><a href="https://sketchfab.com/3d-models/64314e5c91c241efbcc47a7d95f4ba5d" target="_blank" rel="noopener">Wrist Watch</a>, samanthahaddock</li>
+        <li><a href="https://sketchfab.com/3d-models/37e6805f2b7a4158a1d61fe75f8e2a33" target="_blank" rel="noopener">Coffee Shop Cup</a>, DavidZerba</li>
+      </ul>
+      <h4 class="credits-h">[ФОТО // PEXELS]</h4>
+      <ul class="muted credits"><li><a href="https://www.pexels.com/photo/hip-hop-men-posing-against-graffiti-on-wall-16651337/" target="_blank" rel="noopener">Hip Hop Men Posing Against Graffiti</a>, <a href="https://www.pexels.com/@laclav/" target="_blank" rel="noopener">Matheus Rodrigues</a></li></ul>
+      <p class="muted small">Лицензия <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>. Модели перекрашены и изменены.</p>
+    </div>
+  </div>
+  <p class="footer__giant display" aria-hidden="true">MURAVSKIY</p>
+  <div class="wrap footer__bottom mono"><span>© 2026 ГЕОРГИЙ МУРАВСКИЙ.</span><a href="#hero">НАВЕРХ ↑</a></div>
+</footer>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

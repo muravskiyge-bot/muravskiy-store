@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+<!-- Служебная графика: штрихкод и подтёки. Цвета через currentColor и --stk-a (акцент), --stk-b (фон) -->
+<defs>
+  <style>
+    .k { stroke: #050505; stroke-width: 3; stroke-linejoin: round; stroke-linecap: round }
+    .w { fill: #f4f3ef } .b { fill: #050505 } .r { fill: #ff1900 } .y { fill: #f2c94c } .n { fill: none }
+  </style>
+</defs>
+
+
+
+
+
+
+
+
+
+
+<!-- штрихкод -->
+<symbol id="barcode" viewBox="0 0 120 50">
+  <rect class="w" x="0" y="0" width="120" height="50"/>
+  <path stroke="#050505" d="M8 6v30M12 6v30M14 6v30M19 6v30M24 6v30M26 6v30M30 6v30M36 6v30M38 6v30M41 6v30M47 6v30M50 6v30M52 6v30M58 6v30M63 6v30M65 6v30M68 6v30M74 6v30M76 6v30M81 6v30M86 6v30M88 6v30M92 6v30M97 6v30M100 6v30M104 6v30M108 6v30M112 6v30" stroke-width="2"/>
+  <text x="60" y="46" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-weight="700" font-size="8" fill="#050505">GM-2026-0047</text>
+</symbol>
+
+
+<!-- подтёки краски (разделитель) -->
+<symbol id="drips" viewBox="0 0 400 40" preserveAspectRatio="none">
+  <path fill="currentColor" d="M0 0 H400 V6 c-6 0 -6 10 -12 10 s-4 -10 -10 -10 c-4 0 -4 22 -9 22 s-5 -22 -9 -22 h-30 c-5 0 -5 14 -10 14 s-5 -14 -10 -14 h-40 c-4 0 -4 30 -9 30 s-5 -30 -9 -30 h-26 c-5 0 -5 9 -10 9 s-5 -9 -10 -9 h-44 c-5 0 -5 20 -10 20 s-5 -20 -10 -20 h-24 c-4 0 -4 12 -8 12 s-4 -12 -8 -12 h-40 c-5 0 -5 26 -10 26 s-5 -26 -10 -26 h-30 c-5 0 -5 10 -10 10 s-5 -10 -10 -10 h-22 Z"/>
+</symbol>
+</svg>
