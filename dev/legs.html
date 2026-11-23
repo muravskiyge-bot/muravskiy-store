@@ -16,6 +16,12 @@
 <script>
   // внутри главной (?embed=1): кнопки в стиле сайта, без переключения ракурса — класс до загрузки 3D, чтобы не мигало
   if (/[?&]embed\b/.test(location.search)) document.documentElement.classList.add('embed');
+  // тема — как у главной: берём data-theme родительской страницы (тот же сайт), иначе ?theme=light
+  window.themeOf = () => {
+    try { if (parent !== window && parent.document.documentElement.dataset.theme) return parent.document.documentElement.dataset.theme; } catch (e) {}
+    return new URLSearchParams(location.search).get('theme') || 'dark';
+  };
+  document.documentElement.classList.toggle('light', themeOf() === 'light');
 </script>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@700&display=swap" rel="stylesheet">
 <style>
@@ -50,6 +56,11 @@
     .embed .hint::after { content: ''; } .embed .hint .long { display: none; }
   }
   @media (prefers-reduced-motion: reduce) { .embed .ui:not(.touched) button { animation: none; box-shadow: 0 0 0 2px #ff1900; } }
+  /* светлая тема: светлая студия, кнопки — чёрные рамки на бумаге, как на главной */
+  .embed.light, .embed.light body { background: #dddcd6; }
+  .embed.light .ui button { background: #f9f8f4; color: #050505; border-color: #050505; }
+  .embed.light .ui button[aria-pressed="true"] { background: #050505; color: #f9f8f4; }
+  .embed.light .ui button[aria-pressed="false"] { color: #050505; text-decoration-color: #ff1900; text-decoration-thickness: 2px; }   /* красный текст на бумаге читается слабо — чёрный с красным перечёркиванием */
 </style>
 <script type="importmap">
 { "imports": {
@@ -97,7 +108,16 @@ renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(q.has('embed') ? 0x050505 : 0x16171c);
+const BG = { dark: q.has('embed') ? 0x050505 : 0x16171c, light: 0xdddcd6 };
+scene.background = new THREE.Color();
+function applyTheme() {
+  const light = themeOf() === 'light';
+  document.documentElement.classList.toggle('light', light);
+  scene.background.set(light ? BG.light : BG.dark);
+}
+applyTheme();
+// переключатель темы на главной меняет data-theme у родителя — следим и перекрашиваем без перезагрузки
+try { if (parent !== window) new MutationObserver(applyTheme).observe(parent.document.documentElement, { attributes: true, attributeFilter: ['data-theme'] }); } catch (e) {}
 const pmrem = new THREE.PMREMGenerator(renderer);
 scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
 scene.environmentIntensity = 0.35;
@@ -122,9 +142,12 @@ floor.receiveShadow = true;
 scene.add(floor);
 
 const camera = new THREE.PerspectiveCamera(28, 1, 0.05, 50);
-// ?wide=1 — горизонтальное окно на главной: камера ближе и ниже, чтобы человек занимал кадр по высоте
-const narrow = innerWidth < 600;
-const views = q.has('wide') ? (narrow ? { side: [5.6, 1.5, 0.1], three: [3.5, 1.6, 4.3], front: [0, 1.75, 5.6] } : { side: [4.3, 1.4, 0.1], three: [2.7, 1.5, 3.35], front: [0, 1.65, 4.3] }) : { side: [5.2, 1.5, 0.1], three: [3.8, 1.8, 3.8], front: [0, 2.2, 5.2] };
+// ?wide=1 — окно на главной (16:10, на телефоне 4:5): человек целиком, голова ниже плашек сверху
+// вертикальное окно (телефон, планшет) — камера дальше, иначе дорожка не влезает по ширине; пересчитывается в resize() при повороте
+// невысокое окно (телефон боком, низкий ноутбук) — плашки сверху съедают много высоты, поэтому человек мельче и ниже в кадре
+let narrow, short, views;
+const pickViews = () => q.has('wide') ? (narrow ? { side: [6.7, 1.7, 0.1], three: [4.2, 1.85, 5.2], front: [0, 1.95, 6.7] }
+  : short ? { side: [6.8, 1.8, 0.1], three: [4.3, 1.95, 5.3], front: [0, 2.0, 6.8] } : { side: [5.4, 1.55, 0.1], three: [3.4, 1.75, 4.2], front: [0, 1.75, 5.4] }) : { side: [5.2, 1.5, 0.1], three: [3.8, 1.8, 3.8], front: [0, 2.2, 5.2] };
 let view = 'side';
 document.querySelectorAll('[data-view]').forEach((b) => b.addEventListener('click', () => {
   view = b.dataset.view;
@@ -204,6 +227,9 @@ scene.add(treadmill.group);
 scene.add(hoodie.mesh);
 
 function resize() {
+  narrow = innerHeight > innerWidth;
+  short = !narrow && innerHeight < 600; // плашки сверху фиксированной высоты — в невысоком окне они съедают заметную долю кадра
+  views = pickViews();
   renderer.setSize(innerWidth, innerHeight, false);
   camera.aspect = innerWidth / innerHeight;
   camera.updateProjectionMatrix();
@@ -222,7 +248,7 @@ renderer.setAnimationLoop((now) => {
   for (const item of Object.keys(HOLD)) held3d.items[item].group.visible = hoodie.altWeight(HOLD[item]) > 0.6;
   if (q.get('cam')) camera.position.set(...q.get('cam').split(',').map(Number)); // отладка: ?cam=x,y,z&look=y
   else camera.position.set(...views[view]);
-  camera.lookAt(0, Number(q.get('look') || (q.has('wide') ? (narrow ? 0.92 : 1.0) : 1.0)), 0.1);
+  camera.lookAt(0, Number(q.get('look') || (q.has('wide') ? (narrow ? 1.0 : short ? (innerHeight < 360 ? 1.4 : 1.25) : 1.05) : 1.0)), 0.1);
   renderer.render(scene, camera);
 });
 document.title = 'ready';

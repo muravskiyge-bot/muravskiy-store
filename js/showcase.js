@@ -7,10 +7,10 @@ import { loadClothLoop } from './cloth.js';
 const ITEMS = {
   // худи ровно то, что на манекене в примерочной: кадр запечённой ткани (assets/anim/hoodie), тот же цвет и фактура
   hoodie: { cloth: 'assets/anim/hoodie', color: '#2a2c33', fabric: 'assets/anim/fabric.jpg', yaw: 0.3, pitch: 0.04, fit: 0.92 },
-  sneaker: { garment: 'sneakerL', yaw: -0.75, pitch: 0.28, neon: 0.6, exposure: 0.72 },   // белые вещи под неоном слабее
+  sneaker: { garment: 'sneakerL', yaw: -0.75, pitch: 0.28, neon: 0.6, exposure: 0.72, lightExposure: 1.05 },   // белые вещи под неоном слабее
   watch: { garment: 'watch', yaw: 0.35, pitch: 0.2, rotX: Math.PI / 2, fit: 0.78 },   // циферблат к зрителю; габарит почти куб — кадр шире
   pants: { garment: 'pants', yaw: 0.3, pitch: 0.02, fit: 0.95 },
-  cap: { garment: 'cap', yaw: -0.6, pitch: 0.22, fit: 0.85, neon: 0.6, exposure: 0.85 },
+  cap: { garment: 'cap', yaw: -0.6, pitch: 0.22, fit: 0.85, neon: 0.6, exposure: 0.85, lightExposure: 1.1 },
   glasses: { garment: 'aviator', yaw: 0.35, pitch: 0.12, fit: 0.9 },
 };
 const LIGHTS = {
@@ -27,7 +27,9 @@ export async function initShowcase(article) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
   renderer.toneMapping = THREE.AgXToneMapping;   // мягче держит светлые вещи, чем ACES
-  renderer.toneMappingExposure = 0.95 * (cfg.exposure ?? 1);   // белые вещи (кеды, кепка) тише — не засвечиваются
+  // белые вещи (кеды, кепка) на чёрном тише — не засвечиваются; на светлом фоне засвета нет, а приглушение делает их серыми
+  const exposureFor = () => 0.95 * (document.documentElement.dataset.theme === 'dark' ? (cfg.exposure ?? 1) : (cfg.lightExposure ?? cfg.exposure ?? 1));
+  renderer.toneMappingExposure = exposureFor();
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   const scene = new THREE.Scene();
@@ -124,6 +126,7 @@ export async function initShowcase(article) {
     pink.intensity += (target.pink * neonScale - pink.intensity) * k;
     cyan.intensity += (target.cyan * neonScale - cyan.intensity) * k;
     key.position.set(R * (1.2 + aim.x * 0.8), R * (1.8 - aim.y * 0.4), R * 2);
+    renderer.toneMappingExposure = exposureFor();   // тему могут переключить на лету
     renderer.render(scene, camera);
     requestAnimationFrame(frame);
   }
